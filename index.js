@@ -33,17 +33,19 @@ const client = new Client({
 // ==== CONFIG ====
 const configData = require('./config.json');
 const config = {
-  genChannelId: '1448293260308250684',
-  boosterChannelId: '1448293261688045630',
-  vipChannelId: '1448293263541801175',
-  vouchChannelId: '1448293264951087247',
-  logsChannelId: '1448293304138469516',
-  genBansChannelId: '1448293258760556624',
-  restockChannelId: '1449732006333120625',
+  genChannelId: '1555427957210619964',
+  boosterChannelId: '1556279226129448971',
+  vipChannelId: '1556279704875565206',
+  vouchChannelId: '1556279907838074970',
+  logsChannelId: '1556280089715413012',
+  genBansChannelId: '1556280037060124682',
+  restockChannelId: '1556280198045900820',
   emojis: configData.emojis,
 
-  statusText: ".gg/W9u8kr2yGc : Free MCFA Generator",
-  statusRoleId: "1428026856917045311",
+  statusText: ".gg/S9cffQjq9 : Official FlareCloud",
+  statusRoleId: "1555427829800239175",
+  premiumRoleId: "1556280665140363274",
+  freemiumRoleId: "1555427829800239175",
 
   services: {
     "minecraft": {
