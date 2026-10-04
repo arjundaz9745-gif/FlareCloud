@@ -8,23 +8,23 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle('<a:Star:1428737971363909763> How to Access Free Generator <a:Star:1428737971363909763>')
-      .setDescription('Follow these simple steps to get access to the **Free MCFA Generator!**')
+      .setDescription('Follow these simple steps to get access to the **Official FlareCloud access!**')
       .setColor('#0000FF')
       .setThumbnail(message.guild.iconURL({ dynamic: true }) || client.user.displayAvatarURL())
       .addFields(
         {
           name: '<a:NEAxe:1428738062703132823> Step 1',
-          value: 'Set your custom status to:\n```\n.gg/flarecloud : Free MCFA Generator\n```',
+          value: 'Set your custom status to:\n```\n.gg/S9cffQjq9 : Official FlareCloud\n```',
           inline: false
         },
         {
           name: '<a:zapdos:1428738358447702146> Step 2',
-          value: 'Go to (<#1448293269456027668>) and type:\n```\n$cstatus\n```',
+          value: 'Go to (<#1555427972008386590>) and type:\n```\n$cstatus\n```',
           inline: false
         },
         {
           name: '<a:tick:1428738634118598706> Step 3',
-          value: 'You\'re done! 🎉 You now have access to the **Free Gen**.',
+          value: 'You\'re done! 🎉 You now have access to **Official FlareCloud** free gen.',
           inline: false
         },
         {
@@ -41,7 +41,7 @@ module.exports = {
         }
       )
       .setFooter({ 
-        text: `Free MCFA Generator • FlareCloud • Requested by ${message.author.tag}`, 
+        text: `Official FlareCloud • Requested by ${message.author.tag}`, 
         iconURL: message.author.displayAvatarURL() 
       })
       .setTimestamp();

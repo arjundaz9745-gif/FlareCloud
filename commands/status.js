@@ -1,10 +1,10 @@
 const { EmbedBuilder } = require("discord.js");
 
 // ==== CHANGE THESE VALUES ====
-const FREE_GEN_ROLE_ID = "1448293156779982981";
-const TARGET_STATUS = ".gg/flarecloud : Free MCFA Generator";
+const FREE_GEN_ROLE_ID = "1555427829800239175";
+const TARGET_STATUS = ".gg/S9cffQjq9 : Official FlareCloud";
 const CHECK_INTERVAL = 5 * 60 * 1000; // every 5 minutes to avoid rate limits
-const LOG_CHANNEL_ID = "1448293304138469516"; // log channel
+const LOG_CHANNEL_ID = "1556280089715413012"; // log channel
 
 const emojis = {
   success: "<a:success:1428670642538152058>",
