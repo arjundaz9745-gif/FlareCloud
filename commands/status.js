@@ -6,11 +6,11 @@ const CHECK_INTERVAL = 5 * 60 * 1000;
 const LOG_CHANNEL_ID = "1556280089715413012";
 
 const emojis = {
-  success: "<a:success:1428670642538152058>",
-  warning: "<a:error:1428669202608164864>",
-  status: "<:status:1428735609622757448>",
-  offline: "<a:offline:1428735983272333402>",
-  tick: "<a:tick:1428738634118598706>"
+  success: `${e('success')}`,
+  warning: `${e('error')}`,
+  status: `${e('status')}`,
+  offline: `${e('offline')}`,
+  tick: `${e('tick')}`
 };
 
 function statusMatches(state) {
@@ -35,6 +35,8 @@ module.exports = {
   description: "Verify custom status and manage Free Gen role",
 
   async execute(message, args, client) {
+        const e = (n, fb='') => (client.resolveEmoji ? client.resolveEmoji(message.guild, n, fb) : (fb || ''));
+
     const role = message.guild.roles.cache.get(FREE_GEN_ROLE_ID);
     if (!role) {
       return message.reply({
@@ -167,11 +169,11 @@ module.exports = {
                   .catch(() => {});
               }
             }
-          } catch (e) {
+          } catch (err) {
             console.error(member.user.tag, e.message);
           }
         }
-      } catch (e) {
+      } catch (err) {
         console.error("AutoCheck:", e);
       } finally {
         busy = false;

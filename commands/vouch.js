@@ -89,14 +89,14 @@ async function sendVouchFailureNotification(client, member, reason, unblockTime)
 
   const embed = new EmbedBuilder()
     .setColor(0x000000) // black
-    .setTitle('<:bans:1436647470385070131> User Temporarily Banned')
-    .setDescription(`<a:lock_key:1436647561351139411> <@${member.id}> has been **temporarily banned** from using the generator bot.`)
+    .setTitle(`${e('bans')} User Temporarily Banned`)
+    .setDescription(`${e('lock_key')} <@${member.id}> has been **temporarily banned** from using the generator bot.`)
     .addFields(
-      { name: '<a:notepad:1436351110792216656> Reason', value: `> ${reason}`, inline: false },
-      { name: '<a:timer:1428721474138669117> Duration', value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: true },
-      { name: '<a:timer:1428721474138669117> Expires', value: `> ${expiresAt}`, inline: true },
-      { name: '<:bans:1436647470385070131> Banned By', value: `> <@${VOUCH_MENTION_TARGET_ID}>`, inline: false },
-      { name: '<a:notepad:1436351110792216656> Think False Ban?', value: `> Appeal here: ${appealChannel}`, inline: false }
+      { name: `${e('notepad')} Reason`, value: `> ${reason}`, inline: false },
+      { name: `${e('timer')} Duration`, value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: true },
+      { name: `${e('timer')} Expires`, value: `> ${expiresAt}`, inline: true },
+      { name: `${e('bans')} Banned By`, value: `> <@${VOUCH_MENTION_TARGET_ID}>`, inline: false },
+      { name: `${e('notepad')} Think False Ban?`, value: `> Appeal here: ${appealChannel}`, inline: false }
     )
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
     .setFooter({ text: `Requested by ${member.user.tag}`, iconURL: member.user.displayAvatarURL() })
@@ -125,11 +125,11 @@ async function blockUserFromGen(guild, member, reason, client) {
     // ✅ Send unban embed automatically
     const unbanEmbed = new EmbedBuilder()
       .setColor(0x00ff80)
-      .setTitle('<:unban:1428726872824479837> User Unbanned (Ban Expired)')
+      .setTitle(`${e('unban')} User Unbanned (Ban Expired)`)
       .setDescription(`🎉 <@${member.id}> has been **Unbanned** from using the Generator.`)
       .addFields(
-        { name: '<a:timer:1428721474138669117> Ban Duration', value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: false },
-        { name: '<a:notepad:1436351110792216656> Appeal Info', value: `> If you think this was false, you can open a ticket in <#${APPEAL_CHANNEL_ID}>`, inline: false }
+        { name: `${e('timer')} Ban Duration`, value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: false },
+        { name: `${e('notepad')} Appeal Info`, value: `> If you think this was false, you can open a ticket in <#${APPEAL_CHANNEL_ID}>`, inline: false }
       )
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setFooter({ text: 'FlareCloud Generator', iconURL: client.user.displayAvatarURL() })
@@ -226,7 +226,7 @@ async function handleMessage(message, client) {
     if (looksLike && !valid) {
       await message.delete().catch(() => {});
       const warn = await message.channel.send(
-        `<@${message.author.id}> <a:Wrong:1428669341838217216> Invalid vouch.\nUse: \`Legit got <service> by <@${VOUCH_MENTION_TARGET_ID}>\``
+        `<@${message.author.id}> ${e('Wrong')} Invalid vouch.\nUse: \`Legit got <service> by <@${VOUCH_MENTION_TARGET_ID}>\``
       );
       setTimeout(() => warn.delete().catch(() => {}), 5000);
       console.log(`[VOUCH] ❌ Deleted invalid vouch from ${message.author.tag}`);

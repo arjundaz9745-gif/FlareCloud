@@ -4,26 +4,28 @@ module.exports = {
   name: 'genhelp',
   description: 'Show instructions for accessing Free Generator',
   async execute(message, args, client) {
-    const divider = "<a:line:1430126271160909854><a:line:1430126271160909854><a:line:1430126271160909854><a:line:1430126271160909854><a:line:1430126271160909854><a:line:1430126271160909854>";
+        const e = (n, fb='') => (client.resolveEmoji ? client.resolveEmoji(message.guild, n, fb) : (fb || ''));
+
+    const divider = `${e('line')}${e('line')}${e('line')}${e('line')}${e('line')}${e('line')}`;
 
     const embed = new EmbedBuilder()
-      .setTitle('<a:Star:1428737971363909763> How to Access Free Generator <a:Star:1428737971363909763>')
+      .setTitle(`${e('Star')} How to Access Free Generator ${e('Star')}`)
       .setDescription('Follow these simple steps to get access to the **Official FlareCloud access!**')
       .setColor('#0000FF')
       .setThumbnail(message.guild.iconURL({ dynamic: true }) || client.user.displayAvatarURL())
       .addFields(
         {
-          name: '<a:NEAxe:1428738062703132823> Step 1',
+          name: `${e('NEAxe')} Step 1`,
           value: 'Set your custom status to:\n```\nFree G3n/Toolz at .gg/G4uywBjmgU\n```',
           inline: false
         },
         {
-          name: '<a:zapdos:1428738358447702146> Step 2',
+          name: `${e('zapdos')} Step 2`,
           value: 'Go to (<#1555427972008386590>) and type:\n```\n$cstatus\n```',
           inline: false
         },
         {
-          name: '<a:tick:1428738634118598706> Step 3',
+          name: `${e('tick')} Step 3`,
           value: 'You\'re done! 🎉 You now have access to **Official FlareCloud** free gen.',
           inline: false
         },
@@ -33,10 +35,10 @@ module.exports = {
           inline: false
         },
         {
-          name: ' <a:Books_:1428721941631467605> Important Notes',
-          value: '<a:cross:1428738774791098399> Don\'t ping any staff for this.\n' +
-            '<a:ticket:1428738796374982676> Need help? Create a ticket in (<#1448293283997552861>).\n' +
-            '<a:Warningggg:1428322721133236345> Improper custom status = No access granted.',
+          name: ` ${e('Books_')} Important Notes`,
+          value: `${e('cross')} Don\'t ping any staff for this.\n` +
+            `${e('ticket')} Need help? Create a ticket in (<#1448293283997552861>).\n` +
+            `${e('Warningggg')} Improper custom status = No access granted.`,
           inline: false
         }
       )

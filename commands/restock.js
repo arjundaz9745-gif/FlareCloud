@@ -26,15 +26,17 @@ module.exports = {
   name: 'restock',
   description: 'Restock vaults with account files',
   async execute(message, args, client) {
+        const e = (n, fb='') => (client.resolveEmoji ? client.resolveEmoji(message.guild, n, fb) : (fb || ''));
+
     // 🧾 Admin-only protection
     if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
-      return message.reply('<a:wrong:1428669341838217216> You do not have permission to use this command.');
+      return message.reply(`${e('wrong')} You do not have permission to use this command.`);
     }
 
     // 🧾 Check syntax
     if (args.length < 2) {
       const embed = new EmbedBuilder()
-        .setTitle('<a:stock:1428618735035613205> Restock Command Help')
+        .setTitle(`${e('stock')} Restock Command Help`)
         .setDescription(
           '**Usage:** `$restock <vault> <service>` + attach `.txt` file\n\n' +
           '**Example:** `$restock Freemium Mc_Bedrock`\n\n' +
@@ -53,19 +55,19 @@ module.exports = {
 
     // 🔍 Validate vault + service
     const vault = STOCK_PATHS[vaultName];
-    if (!vault) return message.reply('<a:wrong:1428669341838217216> Invalid vault. Use `$restock` to view available vaults.');
+    if (!vault) return message.reply(`${e('wrong')} Invalid vault. Use \`$restock\` to view available vaults.`);
 
     const filePath = vault[serviceName];
-    if (!filePath) return message.reply('<a:wrong:1428669341838217216> Invalid service name for this vault.');
+    if (!filePath) return message.reply(`${e('wrong')} Invalid service name for this vault.`);
 
     // 📎 Require attachment
     if (message.attachments.size === 0) {
-      return message.reply('<a:file:1435495936896794744> Please attach a `.txt` file containing accounts.');
+      return message.reply(`${e('file')} Please attach a \`.txt\` file containing accounts.`);
     }
 
     const attachment = message.attachments.first();
     if (!attachment.name.endsWith('.txt')) {
-      return message.reply('<a:wrong:1428669341838217216> Only `.txt` files are allowed.');
+      return message.reply(`${e('wrong')} Only \`.txt\` files are allowed.`);
     }
 
     try {
@@ -74,7 +76,7 @@ module.exports = {
       const accounts = text.split('\n').filter(line => line.trim().length > 0);
 
       if (accounts.length === 0) {
-        return message.reply('<a:wrong:1428669341838217216> No valid accounts found in the file.');
+        return message.reply(`${e('wrong')} No valid accounts found in the file.`);
       }
 
       const fullPath = path.resolve(process.cwd(), filePath);
@@ -95,7 +97,7 @@ module.exports = {
       //  📤 SUCCESS EMBED
       // ============================
       const embed = new EmbedBuilder()
-        .setTitle('<a:file:1435495936896794744> Restock Successful')
+        .setTitle(`${e('file')} Restock Successful`)
         .setDescription(
           `**Vault:** ${vaultName}\n` +
           `**Service:** ${serviceName}\n` +
@@ -138,7 +140,7 @@ if (restockChannelId) {
         const logsChannel = message.guild.channels.cache.get(logsChannelId);
         if (logsChannel) {
           const logsEmbed = new EmbedBuilder()
-            .setTitle('<a:file:1435495936896794744> Service Restocked')
+            .setTitle(`${e('file')} Service Restocked`)
             .setDescription(`**Vault:** ${vaultName}\n**Service:** ${serviceName}`)
             .addFields(
               { name: 'Accounts Added', value: `${accounts.length}`, inline: true },
@@ -152,7 +154,7 @@ if (restockChannelId) {
       }
     } catch (error) {
       console.error('Restock error:', error);
-      await message.reply('<a:Error:1428669202608164864> Failed to restock. Please check console logs.');
+      await message.reply(`${e('Error')} Failed to restock. Please check console logs.`);
     }
   }
 };

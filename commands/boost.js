@@ -6,6 +6,8 @@ module.exports = {
     name: 'bosst',
     description: 'Generate a booster account',
     async execute(message, args, client) {
+        const e = (n, fb='') => (client.resolveEmoji ? client.resolveEmoji(message.guild, n, fb) : (fb || ''));
+
         const config = client.config;
         const emojis = config.emojis;
         const vouchSystem = require('./vouch.js');
@@ -13,8 +15,8 @@ module.exports = {
         // ✅ Channel check
         if (message.channel.id !== config.boosterChannelId) {
             const embedWrong = new EmbedBuilder()
-                .setTitle(`<a:Wrong:1428669341838217216> Wrong Channel`)
-                .setDescription(`**<a:arrow_arrow:1428683933129637910> Please use this command only in <#${config.boosterChannelId}>.**`)
+                .setTitle(`${e('Wrong')} Wrong Channel`)
+                .setDescription(`**${e('arrow_arrow')} Please use this command only in <#${config.boosterChannelId}>.**`)
                 .setColor(0x001000);
             return message.reply({ embeds: [embedWrong] });
         }
@@ -22,7 +24,7 @@ module.exports = {
         // ✅ Service validation
         if (args.length === 0) {
             const embedNoArgs = new EmbedBuilder()
-                .setTitle(`<a:red_excl:1428670056719450142> Service does not exist.`)
+                .setTitle(`${e('red_excl')} Service does not exist.`)
                 .setDescription(`**Please check $stock for existing services and ensure the service name is correct.**`)
                 .setColor(0x001000);
             return message.reply({ embeds: [embedNoArgs] });
@@ -36,7 +38,7 @@ module.exports = {
         const matchedKey = allServices.find(key => key.toLowerCase() === serviceKey);
         if (!matchedKey) {
             const embedInvalid = new EmbedBuilder()
-                .setTitle(`<a:red_excl:1428670056719450142> Invalid Service`)
+                .setTitle(`${e('red_excl')} Invalid Service`)
                 .setDescription(`**Service '${serviceKeyRaw}' not found. Please check $stock for available booster services.**`)
                 .setColor(0x001000);
             return message.reply({ embeds: [embedInvalid] });
@@ -71,7 +73,7 @@ module.exports = {
 
         if (stockCount === 0) {
             const embedNoStock = new EmbedBuilder()
-                .setTitle(`<a:red_excl:1428670056719450142> Out of Stock`)
+                .setTitle(`${e('red_excl')} Out of Stock`)
                 .setDescription(`**Sorry, this booster service is currently out of stock.**`)
                 .setColor(0x001000);
             return message.reply({ embeds: [embedNoStock] });
@@ -80,7 +82,7 @@ module.exports = {
         // ✅ Check if user blocked
         if (vouchSystem.isUserBlockedFromGen(message.guild, message.author.id)) {
             const embedBlocked = new EmbedBuilder()
-                .setTitle(`<a:Wrong:1428669341838217216> Gen Access Blocked`)
+                .setTitle(`${e('Wrong')} Gen Access Blocked`)
                 .setDescription(`**You are temporarily blocked from using generator commands.**\n\n**Reason:** You did not vouch in time.\n**Appeal here:** <#1555427972008386590>`)
                 .setColor(0xFF0000);
             return message.reply({ embeds: [embedBlocked] });
@@ -95,7 +97,7 @@ module.exports = {
 
         if (!account) {
             const embedError = new EmbedBuilder()
-                .setTitle(`<a:red_excl:1428670056719450142> Error`)
+                .setTitle(`${e('red_excl')} Error`)
                 .setDescription(`**Unable to retrieve account. Please try again later.**`)
                 .setColor(0x001000);
             return message.reply({ embeds: [embedError] });
@@ -106,32 +108,32 @@ module.exports = {
 
         // ✅ Send DM
 const embedDm = new EmbedBuilder()
-    .setTitle(`<a:s_yellow:1428642510539849864> Your Booster Account is Here <a:s_yellow:1428642510539849864>`)
+    .setTitle(`${e('s_yellow')} Your Booster Account is Here ${e('s_yellow')}`)
     .setColor(0x9B59B6)
     .addFields(
         { name: `\u200B`, value: `\u200B`, inline: false },
-        { name: `<a:mail:1428674492284145725> Email`, value: `||\`\`${email}\`\`||`, inline: true },
-        { name: `<a:password:1428674545702932531> Password`, value: `||\`\`${password}\`\`||`, inline: true },
-        { name: `<a:s_yellow:1428642510539849864> Combo`, value: `||\`\`\`${email}:${password}\`\`\`||` },
+        { name: `${e('mail')} Email`, value: `||\`\`${email}\`\`||`, inline: true },
+        { name: `${e('password')} Password`, value: `||\`\`${password}\`\`||`, inline: true },
+        { name: `${e('s_yellow')} Combo`, value: `||\`\`\`${email}:${password}\`\`\`||` },
         { name: `\u200B`, value: `\u200B`, inline: false },        
-        { name: `<a:red_excl:1428670056719450142> **Vouch Requirement**`, value: `**We kindly request your vouch!\nhttps://discord.com/channels/1428026856917045310/1556279907838074970**` }
+        { name: `${e('red_excl')} **Vouch Requirement**`, value: `**We kindly request your vouch!\nhttps://discord.com/channels/1428026856917045310/1556279907838074970**` }
     .setFooter("FlareCloud High Security Systems", "https://cdn.discordapp.com/icons/1428026856917045310/a_f47c020eef6737ce6946cb2bc152f533.webp")
     );
 
         try {
             await message.author.send({ embeds: [embedDm] });
-        } catch (e) {
+        } catch (err) {
             return message.reply("❌ Unable to DM you! Please enable DMs from server members.");
         }
 
         // ✅ Public confirmation
         const embedPublic = new EmbedBuilder()
-            .setTitle(`<a:success:1428670642538152058> Booster Account Generated!`)
-          .setDescription(`**<a:upload:1428673194155442196> Your account has been sent to your DMs.**
+            .setTitle(`${e('success')} Booster Account Generated!`)
+          .setDescription(`**${e('upload')} Your account has been sent to your DMs.**
 
-**<a:s_yellow:1428642510539849864> New account generated by ${message.author}**
-**<a:s_yellow:1428642510539849864> Service generated: ${service.display || serviceKey}**
-**<a:s_yellow:1428642510539849864> Please vouch in <#1556279907838074970> or else you will be blocked from the gen**`)
+**${e('s_yellow')} New account generated by ${message.author}**
+**${e('s_yellow')} Service generated: ${service.display || serviceKey}**
+**${e('s_yellow')} Please vouch in <#1556279907838074970> or else you will be blocked from the gen**`)
             .setColor(0x001000)
             .setFooter({
                 text: 'FlareCloud Generator',
