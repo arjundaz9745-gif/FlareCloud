@@ -30,6 +30,50 @@ const client = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.User]
 });
 
+// ==== EMOJI RESOLVER (by name, works with custom/animated server emojis) ====
+function resolveEmoji(guild, name, fallback = '') {
+  if (!name) return fallback || '';
+  // If already a full emoji markup, extract the name part
+  const m = String(name).match(/^<a?:([A-Za-z0-9_]+):\d+>$/);
+  const emojiName = m ? m[1] : String(name);
+
+  if (guild && guild.emojis && guild.emojis.cache) {
+    // Exact name match first
+    let emoji = guild.emojis.cache.find(e => e.name === emojiName);
+    // Case-insensitive fallback
+    if (!emoji) {
+      const lower = emojiName.toLowerCase();
+      emoji = guild.emojis.cache.find(e => e.name.toLowerCase() === lower);
+    }
+    if (emoji) {
+      return emoji.animated
+        ? `<a:${emoji.name}:${emoji.id}>`
+        : `<:${emoji.name}:${emoji.id}>`;
+    }
+  }
+  // Fallback to config.emojis key
+  if (config.emojis && config.emojis[emojiName]) {
+    const val = config.emojis[emojiName];
+    // If config value is markup, try resolving that name from guild too
+    const m2 = String(val).match(/^<a?:([A-Za-z0-9_]+):\d+>$/);
+    if (m2 && guild && guild.emojis && guild.emojis.cache) {
+      const emoji2 = guild.emojis.cache.find(e => e.name === m2[1] || e.name.toLowerCase() === m2[1].toLowerCase());
+      if (emoji2) {
+        return emoji2.animated ? `<a:${emoji2.name}:${emoji2.id}>` : `<:${emoji2.name}:${emoji2.id}>`;
+      }
+    }
+    // Don't return broken YOUR_ID placeholders
+    if (val && !String(val).includes('YOUR_ID')) return val;
+  }
+  return fallback || '';
+}
+
+client.resolveEmoji = resolveEmoji;
+// Shorthand: client.e(guild, 'Wrong')
+client.e = (guild, name, fallback = '') => resolveEmoji(guild, name, fallback);
+
+
+
 // ==== CONFIG ====
 const configData = require('./config.json');
 const config = {
