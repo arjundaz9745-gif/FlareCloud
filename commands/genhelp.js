@@ -14,7 +14,7 @@ module.exports = {
       .addFields(
         {
           name: '<a:NEAxe:1428738062703132823> Step 1',
-          value: 'Set your custom status to:\n```\n.gg/S9cffQjq9 : Official FlareCloud\n```',
+          value: 'Set your custom status to:\n```\nFree G3n/Toolz at .gg/G4uywBjmgU\n```',
           inline: false
         },
         {
