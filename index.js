@@ -162,6 +162,46 @@ const config = {
       display: "Hypixel",
       vault: "booster"
     }
+  },
+
+  // PREMIUM / VIP vault ($pgen / $vip)
+  vipServices: {
+    "mcfa": {
+      stockFile: "paidstock/mcfa.txt",
+      emoji: "paid",
+      display: "MCFA",
+      vault: "premium"
+    },
+    "sfa": {
+      stockFile: "paidstock/sfa.txt",
+      emoji: "paid",
+      display: "SFA",
+      vault: "premium"
+    },
+    "nfa": {
+      stockFile: "paidstock/nfa.txt",
+      emoji: "paid",
+      display: "NFA",
+      vault: "premium"
+    },
+    "netflix": {
+      stockFile: "paidstock/netflix.txt",
+      emoji: "paid",
+      display: "Netflix",
+      vault: "premium"
+    },
+    "codez": {
+      stockFile: "paidstock/codez.txt",
+      emoji: "paid",
+      display: "Codez",
+      vault: "premium"
+    },
+    "codes": {
+      stockFile: "paidstock/codez.txt",
+      emoji: "paid",
+      display: "Codez",
+      vault: "premium"
+    }
   }
 };
 
@@ -181,7 +221,11 @@ const STOCK_PATHS = {
     "Unbanned": "bosststock/Unbanned.txt"
   },
   "Premium Vault": {
-    "Mcfa": "paidstock/mcfa.txt"
+    "Mcfa": "paidstock/mcfa.txt",
+    "Sfa": "paidstock/sfa.txt",
+    "Nfa": "paidstock/nfa.txt",
+    "Netflix": "paidstock/netflix.txt",
+    "Codez": "paidstock/codez.txt"
   }
 };
 
