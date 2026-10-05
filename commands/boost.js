@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 module.exports = {
-    name: 'bosst',
+    name: 'bgen',
     description: 'Generate a booster account',
     async execute(message, args, client) {
         const e = (n, fb='') => (client.resolveEmoji ? client.resolveEmoji(message.guild, n, fb) : (fb || ''));

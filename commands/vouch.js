@@ -228,6 +228,7 @@ function tempUnbanUser(guild, userId) {
 async function handleMessage(message, client) {
   if (message.author.bot) return;
   const guild = message.guild;
+  if (!guild) return; // DMs / no guild — do not crash command handler
   const member = message.member;
   ensureGuild(guild.id);
 

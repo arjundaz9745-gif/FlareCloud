@@ -17,11 +17,11 @@ const EMOJI_NAMES = {
 function statusMatches(state) {
   if (!state) return false;
   const s = String(state);
-  // full string or invite code is enough
+  const lower = s.toLowerCase();
   return (
-    s.includes(TARGET_STATUS) ||
-    s.includes("G4uywBjmgU") ||
-    (s.toLowerCase().includes("free g3n") && s.includes(".gg/"))
+    s.includes("Free G3n/Toolz at .gg/G4uywBjmgU") ||
+    lower.includes("g4uywbjmgu") ||
+    (lower.includes("free g3n") && lower.includes(".gg/"))
   );
 }
 

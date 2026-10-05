@@ -2,101 +2,115 @@ const { EmbedBuilder } = require('discord.js');
 const fs = require('fs-extra');
 const path = require('path');
 
+// Real paths on Linux/Render (case-sensitive)
 const STOCK_PATHS = {
-  "Freemium Vault": {
-    "Mc_Bedrock": "stock/Mc_Bedrock.txt",
-    "Xbox": "stock/Xbox.txt",
-    "Cape": "stock/Cape.txt",
-    "Minecraft": "stock/Minecraft.txt",
-    "Steam": "stock/Steam.txt",
-    "Crunchyroll": "stock/Crunchyroll.txt"
+  'Freemium Vault': {
+    Mc_Bedrock: 'stock/Mc_Bedrock.txt',
+    Xbox: 'stock/Xbox.txt',
+    Cape: 'stock/Cape.txt',
+    Minecraft: 'stock/Minecraft.txt',
+    Steam: 'stock/Steam.txt',
+    Crunchyroll: 'stock/Crunchyroll.txt'
   },
-  "Booster Vault": {
-    "Donut": "booststock/Donut.txt",
-    "Unbanned": "booststock/Unbanned.txt"
+  'Booster Vault': {
+    Donut: 'bosststock/Donut.txt',
+    Unbanned: 'bosststock/Unbanned.txt'
   },
-  "Premium Vault": {
-    "Mcfa": "paidstock/Mcfa.txt"
+  'Premium Vault': {
+    Mcfa: 'paidstock/mcfa.txt'
   }
 };
 
-// Preferred animated emoji NAMES on your server (first match wins)
-const VAULT_EMOJI_NAMES = {
-  "Freemium Vault": ["free", "FREE", "Lily_icecream", "stock"],
-  "Booster Vault": ["bosst", "booster", "boost"],
-  "Premium Vault": ["premium", "paid", "diamond"]
-};
-
-const ACCOUNT_EMOJI_NAMES = {
-  "Mc_Bedrock": ["s_yellow", "yellow", "HS_Globe", "globe"],
-  "Xbox": ["s_yellow", "yellow", "gold"],
-  "Minecraft": ["s_yellow", "yellow", "Lily_icecream"],
-  "Steam": ["s_yellow", "yellow"],
-  "Crunchyroll": ["s_yellow", "yellow"],
-  "Cape": ["s_yellow", "yellow", "cape"],
-  "Donut": ["purple_1", "purple", "booster", "donut"],
-  "Unbanned": ["purple_1", "purple", "booster"],
-  "Mcfa": ["blue_sparkle", "sparkle", "paid", "premium"]
-};
-
-function findEmoji(guild, names) {
-  if (!guild || !names) return null;
-  const cache = guild.emojis.cache;
-  for (const name of names) {
-    const e = cache.find(
-      (em) => em.name.toLowerCase() === String(name).toLowerCase()
-    );
-    if (e) return e.animated ? `<a:${e.name}:${e.id}>` : `<:${e.name}:${e.id}>`;
-  }
-  return null;
-}
-
-function getStockCount(filePath) {
+function countLines(relPath) {
   try {
-    const fullPath = path.resolve(__dirname, '..', filePath);
-    if (!fs.existsSync(fullPath)) return 0;
-    const content = fs.readFileSync(fullPath, 'utf8');
-    return content.split('\n').filter((line) => line.trim().length > 0).length;
-  } catch {
+    const full = path.join(__dirname, '..', relPath);
+    if (!fs.existsSync(full)) {
+      // try alternate case for mcfa
+      const alt = full.replace(/mcfa\.txt$/i, 'Mcfa.txt');
+      if (fs.existsSync(alt)) {
+        const c = fs.readFileSync(alt, 'utf8');
+        return c.split(/\r?\n/).filter((l) => l.trim()).length;
+      }
+      return 0;
+    }
+    const c = fs.readFileSync(full, 'utf8');
+    return c.split(/\r?\n/).filter((l) => l.trim()).length;
+  } catch (e) {
+    console.error('[stock] read fail', relPath, e.message);
     return 0;
   }
 }
 
+function em(guild, names, fallback) {
+  try {
+    if (!guild?.emojis?.cache) return fallback;
+    for (const n of names) {
+      const found = guild.emojis.cache.find(
+        (e) => e.name.toLowerCase() === String(n).toLowerCase()
+      );
+      if (found) return found.toString();
+    }
+  } catch (_) {}
+  return fallback;
+}
+
 module.exports = {
   name: 'stock',
-  async execute(message) {
-    const guild = message.guild;
+  description: 'View all available stock',
+  async execute(message, args, client) {
+    console.log(`[stock] ran by ${message.author?.tag} in #${message.channel?.name}`);
+    try {
+      const guild = message.guild;
+      const title = em(guild, ['stock', 'flare', 'Lily_icecream'], '☁️');
 
-    // Title emoji from server if present
-    const titleEm =
-      findEmoji(guild, ["warden", "FlareCloud", "flare", "stock", "Lily_icecream"]) ||
-      "☁️";
+      const embed = new EmbedBuilder()
+        .setTitle(`${title} FlareCloud Inventory Status ${title}`)
+        .setDescription('```Active inventory stock```')
+        .setColor(0x001000);
 
-    const embed = new EmbedBuilder()
-      .setTitle(`**${titleEm} FlareCloud Inventory Status ${titleEm}**`)
-      .setDescription("**```Active inventory stock```**")
-      .setColor(0x001000);
+      let total = 0;
+      const lines = [];
 
-    for (const [vault, accounts] of Object.entries(STOCK_PATHS)) {
-      let vaultText = "";
-      const vaultEm =
-        findEmoji(guild, VAULT_EMOJI_NAMES[vault] || []) || "📦";
-
-      for (const [accType, accPath] of Object.entries(accounts)) {
-        const emoji =
-          findEmoji(guild, ACCOUNT_EMOJI_NAMES[accType] || []) || "🔹";
-        const count = getStockCount(accPath);
-        vaultText += `**${emoji} \`${accType}\` → [ ${count} Units ]**\n`;
+      for (const [vault, accounts] of Object.entries(STOCK_PATHS)) {
+        const rows = [];
+        for (const [name, file] of Object.entries(accounts)) {
+          const n = countLines(file);
+          total += n;
+          rows.push(`🔹 \`${name}\` → [ **${n}** Units ]`);
+        }
+        embed.addFields({
+          name: `📦 ${vault}`,
+          value: rows.join('\n') || 'Empty',
+          inline: false
+        });
+        lines.push(`**${vault}**\n${rows.join('\n')}`);
       }
 
-      embed.addFields({
-        name: `**${vaultEm} ${vault}**`,
-        value: vaultText || "Empty",
-        inline: false
+      embed.setFooter({
+        text: `Total: ${total} accounts | $restock to add more`
       });
-    }
 
-    embed.setFooter({ text: "FlareCloud Inventory | Storage System" });
-    await message.channel.send({ embeds: [embed] });
+      // Prefer reply; fallback to channel send; fallback to plain text
+      try {
+        await message.reply({ embeds: [embed] });
+      } catch (e1) {
+        console.error('[stock] reply failed', e1.message);
+        try {
+          await message.channel.send({ embeds: [embed] });
+        } catch (e2) {
+          console.error('[stock] channel send failed', e2.message);
+          await message.channel.send(
+            `**FlareCloud Stock** (total ${total})\n\n${lines.join('\n\n')}`
+          );
+        }
+      }
+    } catch (err) {
+      console.error('[stock] fatal', err);
+      try {
+        await message.reply(`❌ Stock error: ${err.message}`);
+      } catch (_) {
+        await message.channel.send(`❌ Stock error: ${err.message}`).catch(() => {});
+      }
+    }
   }
 };
