@@ -9,7 +9,7 @@ const STOCK_PATHS = {
     "Mcnfa": "stock/Mcnfa.txt",
     "Xbox": "stock/Xbox.txt",
     "Steam": "stock/Steam.txt",
-    "CrunchyRoll": "stock/CrunchyRoll.txt",
+    "CrunchyRoll": "stock/Crunchyroll.txt",
     "Xbox_Code": "stock/Xbox_Code.txt",
     "Netflix": "stock/Netflix.txt"
   },
@@ -17,6 +17,13 @@ const STOCK_PATHS = {
     "Mcsfa": "bosststock/Mcsfa.txt",
     "Donut": "bosststock/Donut.txt",
     "Hypixel": "bosststock/Hypixel.txt"
+  },
+  "Premium": {
+    "Mcfa": "paidstock/mcfa.txt",
+    "Sfa": "paidstock/sfa.txt",
+    "Nfa": "paidstock/nfa.txt",
+    "Netflix": "paidstock/netflix.txt",
+    "Codez": "paidstock/codez.txt"
   }
 };
 
