@@ -118,7 +118,7 @@ const config = {
       display: "Xbox"
     },
     "donut": {
-      stockFile: "booststock/Donut.txt",
+      stockFile: "bosststock/Donut.txt",
       emoji: "booster",
       display: "donut"
     },
@@ -128,12 +128,12 @@ const config = {
       display: "Cape"
     },
     "unbanned": {
-      stockFile: "booststock/Unbanned.txt",
+      stockFile: "bosststock/Unbanned.txt",
       emoji: "booster",
       display: "Unbanned"
     },
     "mcfa": {
-      stockFile: "paidstock/Mcfa.txt",
+      stockFile: "paidstock/mcfa.txt",
       emoji: "paid",
       display: "MCFA Premium"
     }
@@ -151,12 +151,12 @@ const STOCK_PATHS = {
     "Steam": "freestock/Steam.txt"
   },
   "Booster Vault": {
-    "Ranked": "booststock/Ranked.txt",
-    "Cape": "booststock/Cape.txt",
-    "Unbanned": "booststock/Unbanned.txt"
+    "Ranked": "bosststock/Ranked.txt",
+    "Cape": "bosststock/Cape.txt",
+    "Unbanned": "bosststock/Unbanned.txt"
   },
   "Premium Vault": {
-    "Mcfa": "premiumstock/Mcfa.txt"
+    "Mcfa": "paidstock/mcfa.txt"
   }
 };
 
