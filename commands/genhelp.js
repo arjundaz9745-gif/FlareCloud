@@ -15,6 +15,7 @@ module.exports = {
     const arrow = e('arrow_1', '»');
 
     const freeCh = '<#1555427957210619964>';
+    const cmdCh = '<#1555427972008386590>';
     const boostCh = '<#1556279226129448971>';
     const premCh = '<#1556279704875565206>';
     const seller = '<@1398979148063571989>';
@@ -32,7 +33,7 @@ module.exports = {
           '',
           `\`\`\`\n${STATUS}\n\`\`\``,
           '',
-          `${arrow} Then go to ${freeCh} and run:`,
+          `${arrow} Then go to ${cmdCh} and run:`,
           '',
           '```\n-cstatus\n```',
           '',
