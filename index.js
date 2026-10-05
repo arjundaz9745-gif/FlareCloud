@@ -102,50 +102,65 @@ const config = {
   premiumPrice: "$5",
 
   services: {
-    "minecraft": {
-      stockFile: "stock/Minecraft.txt",
-      emoji: "ice_cube",
-      display: "Minecraft Java"
-    },
-    "steam": {
-      stockFile: "stock/Steam.txt",
-      emoji: "ice_cube",
-      display: "Steam"
-    },
-    "crunchyroll": {
-      stockFile: "stock/Crunchyroll.txt",
-      emoji: "ice_cube",
-      display: "Crunchyroll"
-     },
-    "mc_bedrock": {
-      stockFile: "stock/Mc_Bedrock.txt",
-      emoji: "globe",
-      display: "Minecraft Bedrock"
+    "mcnfa": {
+      stockFile: "stock/Mcnfa.txt",
+      emoji: "s_yellow",
+      display: "Mcnfa",
+      vault: "free"
     },
     "xbox": {
       stockFile: "stock/Xbox.txt",
-      emoji: "gold",
-      display: "Xbox"
+      emoji: "s_yellow",
+      display: "Xbox",
+      vault: "free"
+    },
+    "steam": {
+      stockFile: "stock/Steam.txt",
+      emoji: "s_yellow",
+      display: "Steam",
+      vault: "free"
+    },
+    "crunchyroll": {
+      stockFile: "stock/CrunchyRoll.txt",
+      emoji: "s_yellow",
+      display: "CrunchyRoll",
+      vault: "free"
+    },
+    "xboxcode": {
+      stockFile: "stock/Xbox_Code.txt",
+      emoji: "s_yellow",
+      display: "Xbox Code",
+      vault: "free"
+    },
+    "xbox_code": {
+      stockFile: "stock/Xbox_Code.txt",
+      emoji: "s_yellow",
+      display: "Xbox Code",
+      vault: "free"
+    },
+    "netflix": {
+      stockFile: "stock/Netflix.txt",
+      emoji: "s_yellow",
+      display: "Netflix",
+      vault: "free"
+    },
+    "mcsfa": {
+      stockFile: "bosststock/Mcsfa.txt",
+      emoji: "purple_1",
+      display: "Mcsfa",
+      vault: "booster"
     },
     "donut": {
       stockFile: "bosststock/Donut.txt",
-      emoji: "booster",
-      display: "donut"
+      emoji: "purple_1",
+      display: "Donut",
+      vault: "booster"
     },
-    "cape": {
-      stockFile: "stock/Cape.txt",
-      emoji: "booster",
-      display: "Cape"
-    },
-    "unbanned": {
-      stockFile: "bosststock/Unbanned.txt",
-      emoji: "booster",
-      display: "Unbanned"
-    },
-    "mcfa": {
-      stockFile: "paidstock/mcfa.txt",
-      emoji: "paid",
-      display: "MCFA Premium"
+    "hypixel": {
+      stockFile: "bosststock/Hypixel.txt",
+      emoji: "purple_1",
+      display: "Hypixel",
+      vault: "booster"
     }
   }
 };
@@ -194,7 +209,7 @@ for (const file of commandFiles) {
       if (command.name === 'pgen') aliases.push('vip');
       if (command.name === 'genhelp') aliases.push('access', 'tutorial', 'guide');
       for (const a of aliases) commands.set(a, command);
-      console.log(`✅ Loaded command: -${command.name} (${file})`);
+      console.log(`✅ Loaded command: $${command.name} (${file})`);
     } else {
       console.log(`⚠️ Skipped ${file} (no command.name)`);
     }
@@ -298,7 +313,7 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
 
 client.once(Events.ClientReady, async () => {
   console.log(`✅ Bot is ready! Logged in as ${client.user.tag}`);
-  console.log(`📋 Commands loaded: ${[...commands.keys()].map(c => '-' + c).join(', ')}`);
+  console.log(`📋 Commands loaded: ${[...commands.keys()].map(c => '$' + c).join(', ')}`);
   console.log(`😀 Emojis visible to bot: ${client.emojis.cache.size}`);
   for (const [, g] of client.guilds.cache) {
     console.log(`   Guild ${g.name}: ${g.emojis.cache.size} emojis`);
