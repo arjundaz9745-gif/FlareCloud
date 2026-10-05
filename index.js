@@ -162,15 +162,27 @@ const STOCK_PATHS = {
 
 // ==== COMMAND LOADER ====
 const commands = new Map();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandsDir = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsDir).filter(file =>
+  file.endsWith('.js') &&
+  file !== 'index.js' &&
+  !file.startsWith('_')
+);
 
 let vouchSystem = null;
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  if (file === 'vouch.js') {
-    vouchSystem = command;
-  } else if (command.name) {
-    commands.set(command.name, command);
+  try {
+    const command = require(path.join(commandsDir, file));
+    if (file === 'vouch.js') {
+      vouchSystem = command;
+    } else if (command && command.name) {
+      commands.set(command.name, command);
+      console.log(`✅ Loaded command: $${command.name} (${file})`);
+    } else {
+      console.log(`⚠️ Skipped ${file} (no command.name)`);
+    }
+  } catch (err) {
+    console.error(`❌ Failed to load commands/${file}:`, err.message);
   }
 }
 
