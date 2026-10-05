@@ -1,4 +1,16 @@
 const { EmbedBuilder } = require('discord.js');
+
+
+// Resolve emoji by name (needs client + guild); safe fallback empty string
+function e(name, client, guild) {
+  try {
+    if (client && client.resolveEmoji) {
+      return client.resolveEmoji(guild || null, name, '') || '';
+    }
+  } catch (_) {}
+  return '';
+}
+
 const fs = require('fs');
 const path = require('path');
 
@@ -89,14 +101,14 @@ async function sendVouchFailureNotification(client, member, reason, unblockTime)
 
   const embed = new EmbedBuilder()
     .setColor(0x000000) // black
-    .setTitle(`${e('bans')} User Temporarily Banned`)
-    .setDescription(`${e('lock_key')} <@${member.id}> has been **temporarily banned** from using the generator bot.`)
+    .setTitle(`${e('bans', client, member && member.guild)} User Temporarily Banned`)
+    .setDescription(`${e('lock_key', client, member && member.guild)} <@${member.id}> has been **temporarily banned** from using the generator bot.`)
     .addFields(
-      { name: `${e('notepad')} Reason`, value: `> ${reason}`, inline: false },
-      { name: `${e('timer')} Duration`, value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: true },
-      { name: `${e('timer')} Expires`, value: `> ${expiresAt}`, inline: true },
-      { name: `${e('bans')} Banned By`, value: `> <@${VOUCH_MENTION_TARGET_ID}>`, inline: false },
-      { name: `${e('notepad')} Think False Ban?`, value: `> Appeal here: ${appealChannel}`, inline: false }
+      { name: `${e('notepad', client, member && member.guild)} Reason`, value: `> ${reason}`, inline: false },
+      { name: `${e('timer', client, member && member.guild)} Duration`, value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: true },
+      { name: `${e('timer', client, member && member.guild)} Expires`, value: `> ${expiresAt}`, inline: true },
+      { name: `${e('bans', client, member && member.guild)} Banned By`, value: `> <@${VOUCH_MENTION_TARGET_ID}>`, inline: false },
+      { name: `${e('notepad', client, member && member.guild)} Think False Ban?`, value: `> Appeal here: ${appealChannel}`, inline: false }
     )
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
     .setFooter({ text: `Requested by ${member.user.tag}`, iconURL: member.user.displayAvatarURL() })
@@ -125,11 +137,11 @@ async function blockUserFromGen(guild, member, reason, client) {
     // ✅ Send unban embed automatically
     const unbanEmbed = new EmbedBuilder()
       .setColor(0x00ff80)
-      .setTitle(`${e('unban')} User Unbanned (Ban Expired)`)
+      .setTitle(`${e('unban', client, member && member.guild)} User Unbanned (Ban Expired)`)
       .setDescription(`🎉 <@${member.id}> has been **Unbanned** from using the Generator.`)
       .addFields(
-        { name: `${e('timer')} Ban Duration`, value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: false },
-        { name: `${e('notepad')} Appeal Info`, value: `> If you think this was false, you can open a ticket in <#${APPEAL_CHANNEL_ID}>`, inline: false }
+        { name: `${e('timer', client, member && member.guild)} Ban Duration`, value: `> ${GEN_BLOCK_MINUTES} minutes`, inline: false },
+        { name: `${e('notepad', client, member && member.guild)} Appeal Info`, value: `> If you think this was false, you can open a ticket in <#${APPEAL_CHANNEL_ID}>`, inline: false }
       )
       .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
       .setFooter({ text: 'FlareCloud Generator', iconURL: client.user.displayAvatarURL() })
@@ -226,7 +238,7 @@ async function handleMessage(message, client) {
     if (looksLike && !valid) {
       await message.delete().catch(() => {});
       const warn = await message.channel.send(
-        `<@${message.author.id}> ${e('Wrong')} Invalid vouch.\nUse: \`Legit got <service> by <@${VOUCH_MENTION_TARGET_ID}>\``
+        `<@${message.author.id}> ${e('Wrong', client, message.guild)} Invalid vouch.\nUse: \`Legit got <service> by <@${VOUCH_MENTION_TARGET_ID}>\``
       );
       setTimeout(() => warn.delete().catch(() => {}), 5000);
       console.log(`[VOUCH] ❌ Deleted invalid vouch from ${message.author.tag}`);

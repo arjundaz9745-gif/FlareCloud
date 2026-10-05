@@ -5,12 +5,13 @@ const TARGET_STATUS = "Free G3n/Toolz at .gg/G4uywBjmgU";
 const CHECK_INTERVAL = 5 * 60 * 1000;
 const LOG_CHANNEL_ID = "1556280089715413012";
 
-const emojis = {
-  success: `${e('success')}`,
-  warning: `${e('error')}`,
-  status: `${e('status')}`,
-  offline: `${e('offline')}`,
-  tick: `${e('tick')}`
+// Emoji names — resolved at runtime via client.resolveEmoji
+const EMOJI_NAMES = {
+  success: 'success',
+  warning: 'error',
+  status: 'status',
+  offline: 'offline',
+  tick: 'tick'
 };
 
 function statusMatches(state) {
@@ -36,6 +37,13 @@ module.exports = {
 
   async execute(message, args, client) {
         const e = (n, fb='') => (client.resolveEmoji ? client.resolveEmoji(message.guild, n, fb) : (fb || ''));
+    const emojis = {
+      success: e('success'),
+      warning: e('error'),
+      status: e('status'),
+      offline: e('offline'),
+      tick: e('tick')
+    };
 
     const role = message.guild.roles.cache.get(FREE_GEN_ROLE_ID);
     if (!role) {
@@ -120,6 +128,15 @@ module.exports = {
   },
 
   async startAutoCheck(client) {
+    const e = (n) => (client.resolveEmoji ? client.resolveEmoji(client.guilds.cache.first(), n, '') : '');
+    const emojis = {
+      success: e('success'),
+      warning: e('error'),
+      status: e('status'),
+      offline: e('offline'),
+      tick: e('tick')
+    };
+
     const guild = client.guilds.cache.first();
     if (!guild) return;
 
@@ -170,11 +187,11 @@ module.exports = {
               }
             }
           } catch (err) {
-            console.error(member.user.tag, e.message);
+            console.error(member.user.tag, err.message);
           }
         }
       } catch (err) {
-        console.error("AutoCheck:", e);
+        console.error("AutoCheck:", err);
       } finally {
         busy = false;
       }
