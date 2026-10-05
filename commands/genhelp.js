@@ -19,8 +19,6 @@ module.exports = {
     const boostCh = '<#1556279226129448971>';
     const premCh = '<#1556279704875565206>';
     const seller = '<@1398979148063571989>';
-
-    // Exact status users must set
     const STATUS = 'Free G3n/Toolz at .gg/G4uywBjmgU';
 
     const embed = new EmbedBuilder()
@@ -35,22 +33,22 @@ module.exports = {
           '',
           `${arrow} Then go to ${cmdCh} and run:`,
           '',
-          '```\n-cstatus\n```',
+          '```\n$cstatus\n```',
           '',
           `${verified} Once verified, you will receive the free-gen role and can use **Free G3n**.`,
           `${verified} Keep that status on. If you remove it, access can be removed automatically.`,
           '',
           `${arrow} **How to use Free G3n**`,
           `${verified} Open ${freeCh}`,
-          `${verified} Run \`-fgen <service>\` (example: \`-fgen minecraft\`)`,
-          `${verified} Check stock first with \`-stock\``,
+          `${verified} Run \`$fgen <service>\` (example: \`$fgen minecraft\`)`,
+          `${verified} Check stock first with \`$stock\``,
           '',
           '────────────────────',
           '',
           `${arrow} **BOOSTER G3N**`,
           `${verified} Boost this server to unlock **Booster G3n**.`,
           `${verified} After boosting, go to ${boostCh}`,
-          `${verified} Run \`-bgen <service>\` to generate a booster-tier account.`,
+          `${verified} Run \`$bgen <service>\` to generate a booster-tier account.`,
           '',
           '────────────────────',
           '',
@@ -59,7 +57,7 @@ module.exports = {
           `${verified} Price: **$5**`,
           `${verified} DM ${seller} to purchase access.`,
           `${verified} After payment is confirmed, you get the premium role and can use ${premCh}`,
-          `${verified} Command: \`-pgen <service>\``,
+          `${verified} Command: \`$pgen <service>\``,
           '',
           '────────────────────',
           '',
@@ -69,12 +67,11 @@ module.exports = {
           `${arrow} Premium G3n: ${premCh}`,
           '',
           `${hashtag} **QUICK COMMANDS**`,
-          `${arrow} \`-fgen <service>\` — Free tier account`,
-          `${arrow} \`-bgen <service>\` — Booster tier account`,
-          `${arrow} \`-pgen <service>\` — Premium tier account`,
-          `${arrow} \`-stock\` — View all stock`,
-          `${arrow} \`-cstatus\` — Verify free status & get role`,
-          `${arrow} \`-access\` — Show this guide again`,
+          `${arrow} \`$fgen <service>\` — Free tier account`,
+          `${arrow} \`$bgen <service>\` — Booster tier account`,
+          `${arrow} \`$pgen <service>\` — Premium tier account`,
+          `${arrow} \`$stock\` — View all stock`,
+          `${arrow} \`$cstatus\` — Verify free status & get role`,
           '',
           `${verified} **Rules**`,
           `${arrow} Always vouch after generating when asked`,
@@ -84,7 +81,7 @@ module.exports = {
         ].join('\n')
       )
       .setFooter({
-        text: 'FlareCloud • Access Guide • Done reading? Use -cstatus then -fgen'
+        text: 'FlareCloud • Access Guide • Set status → $cstatus → $fgen'
       });
 
     await message.reply({ embeds: [embed] });
