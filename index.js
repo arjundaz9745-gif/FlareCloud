@@ -33,38 +33,46 @@ const client = new Client({
 // ==== EMOJI RESOLVER (by name, works with custom/animated server emojis) ====
 function resolveEmoji(guild, name, fallback = '') {
   if (!name) return fallback || '';
-  // If already a full emoji markup, extract the name part
   const m = String(name).match(/^<a?:([A-Za-z0-9_]+):\d+>$/);
   const emojiName = m ? m[1] : String(name);
+  const lower = emojiName.toLowerCase();
 
-  if (guild && guild.emojis && guild.emojis.cache) {
-    // Exact name match first
-    let emoji = guild.emojis.cache.find(e => e.name === emojiName);
-    // Case-insensitive fallback
-    if (!emoji) {
-      const lower = emojiName.toLowerCase();
-      emoji = guild.emojis.cache.find(e => e.name.toLowerCase() === lower);
-    }
-    if (emoji) {
-      return emoji.animated
-        ? `<a:${emoji.name}:${emoji.id}>`
-        : `<:${emoji.name}:${emoji.id}>`;
-    }
+  const findIn = (cache) => {
+    if (!cache) return null;
+    return (
+      cache.find(e => e.name === emojiName) ||
+      cache.find(e => e.name.toLowerCase() === lower) ||
+      null
+    );
+  };
+
+  // 1) This guild
+  let emoji = guild && guild.emojis ? findIn(guild.emojis.cache) : null;
+  // 2) All emojis the bot can see (every mutual server)
+  if (!emoji && client.emojis && client.emojis.cache) {
+    emoji = findIn(client.emojis.cache);
   }
-  // Fallback to config.emojis key
-  if (config.emojis && config.emojis[emojiName]) {
-    const val = config.emojis[emojiName];
-    // If config value is markup, try resolving that name from guild too
-    const m2 = String(val).match(/^<a?:([A-Za-z0-9_]+):\d+>$/);
-    if (m2 && guild && guild.emojis && guild.emojis.cache) {
-      const emoji2 = guild.emojis.cache.find(e => e.name === m2[1] || e.name.toLowerCase() === m2[1].toLowerCase());
-      if (emoji2) {
-        return emoji2.animated ? `<a:${emoji2.name}:${emoji2.id}>` : `<:${emoji2.name}:${emoji2.id}>`;
+  if (emoji) return emoji.toString();
+
+  // 3) config.json fallback (only if not YOUR_ID)
+  try {
+    if (typeof config !== 'undefined' && config.emojis && config.emojis[emojiName]) {
+      const val = config.emojis[emojiName];
+      if (val && !String(val).includes('YOUR_ID')) {
+        const m2 = String(val).match(/^<a?:([A-Za-z0-9_]+):\d+>$/);
+        if (m2) {
+          const e2 = findIn(client.emojis && client.emojis.cache) ||
+            (guild && guild.emojis && findIn(guild.emojis.cache));
+          // try by extracted name
+          const byName = findIn(client.emojis && client.emojis.cache);
+          const fromName = client.emojis.cache.find(e => e.name.toLowerCase() === m2[1].toLowerCase());
+          if (fromName) return fromName.toString();
+        }
+        return val;
       }
     }
-    // Don't return broken YOUR_ID placeholders
-    if (val && !String(val).includes('YOUR_ID')) return val;
-  }
+  } catch (_) {}
+
   return fallback || '';
 }
 
@@ -86,10 +94,12 @@ const config = {
   restockChannelId: '1556280198045900820',
   emojis: configData.emojis,
 
-  statusText: ".gg/S9cffQjq9 : Official FlareCloud",
+  statusText: "Free G3n/Toolz at .gg/G4uywBjmgU",
   statusRoleId: "1555427829800239175",
   premiumRoleId: "1556280665140363274",
   freemiumRoleId: "1555427829800239175",
+  premiumSellerId: "1398979148063571989",
+  premiumPrice: "$5",
 
   services: {
     "minecraft": {
@@ -177,7 +187,14 @@ for (const file of commandFiles) {
       vouchSystem = command;
     } else if (command && command.name) {
       commands.set(command.name, command);
-      console.log(`✅ Loaded command: $${command.name} (${file})`);
+      // aliases
+      const aliases = command.aliases || [];
+      if (command.name === 'fgen') aliases.push('free');
+      if (command.name === 'bgen') aliases.push('bosst', 'boost');
+      if (command.name === 'pgen') aliases.push('vip');
+      if (command.name === 'genhelp') aliases.push('access', 'tutorial', 'guide');
+      for (const a of aliases) commands.set(a, command);
+      console.log(`✅ Loaded command: -${command.name} (${file})`);
     } else {
       console.log(`⚠️ Skipped ${file} (no command.name)`);
     }
@@ -207,21 +224,45 @@ async function logCommandUsage(message, commandName, args) {
 
 // ==== MESSAGE HANDLER ====
 client.on('messageCreate', async (message) => {
-  if (vouchSystem) await vouchSystem.handleMessage(message, client);
-  if (message.author.bot || !message.content.startsWith('$')) return;
-
-  const args = message.content.slice(1).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-  const command = commands.get(commandName);
-
-  if (command) {
-    try {
-      await command.execute(message, args, client);
-      await logCommandUsage(message, commandName, args);
-    } catch (error) {
-      console.error(error);
-      message.reply('❌ There was an error executing that command!');
+  try {
+    if (vouchSystem) {
+      try {
+        await vouchSystem.handleMessage(message, client);
+      } catch (vouchErr) {
+        console.error('[VOUCH] handleMessage error:', vouchErr.message);
+      }
     }
+  } catch (_) {}
+
+  if (message.author.bot) return;
+  if (!message.guild) return; // ignore DMs for prefix commands
+
+  const raw = (message.content || '').trim();
+  if (!raw) return;
+
+  let prefix = null;
+  if (raw.startsWith('-')) prefix = '-';
+  else if (raw.startsWith('$')) prefix = '$';
+  else return;
+
+  const args = raw.slice(prefix.length).trim().split(/\s+/).filter(Boolean);
+  const commandName = (args.shift() || '').toLowerCase();
+  if (!commandName) return;
+
+  const command = commands.get(commandName);
+  console.log(`[CMD] ${message.author.tag}: ${prefix}${commandName}`, 'args=', args);
+
+  if (!command) {
+    console.log(`[CMD] Unknown: ${prefix}${commandName} | loaded: ${[...commands.keys()].join(', ')}`);
+    return;
+  }
+
+  try {
+    await command.execute(message, args, client);
+    await logCommandUsage(message, commandName, args);
+  } catch (error) {
+    console.error(`[CMD] ${prefix}${commandName} error:`, error);
+    await message.reply(`❌ Error: ${error.message || error}`).catch(() => {});
   }
 });
 
@@ -257,6 +298,13 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
 
 client.once(Events.ClientReady, async () => {
   console.log(`✅ Bot is ready! Logged in as ${client.user.tag}`);
+  console.log(`📋 Commands loaded: ${[...commands.keys()].map(c => '-' + c).join(', ')}`);
+  console.log(`😀 Emojis visible to bot: ${client.emojis.cache.size}`);
+  for (const [, g] of client.guilds.cache) {
+    console.log(`   Guild ${g.name}: ${g.emojis.cache.size} emojis`);
+  }
+
+
 
   // === BOT WATCHING STATUS ===
   client.user.setActivity('.gg/dSm3FHqNJ', {
