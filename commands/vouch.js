@@ -17,7 +17,7 @@ const path = require('path');
 // ⚙️ CONFIG
 const dataFilePath = path.resolve(__dirname, '..', 'data.json');
 const VOUCH_CHANNEL_ID = '1556279907838074970';
-const VOUCH_MENTION_TARGET_ID = '1428660662602563626';
+const VOUCH_MENTION_TARGET_ID = '1556221818325696512';
 const GENERATOR_CHANNEL_IDS = [
   '1555427957210619964', // free gen
   '1556279226129448971', // booster gen

@@ -6,19 +6,17 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 // 🧱 Vault structure
 const STOCK_PATHS = {
   "Freemium": {
-    "Mc_Bedrock": "stock/Mc_Bedrock.txt",
+    "Mcnfa": "stock/Mcnfa.txt",
     "Xbox": "stock/Xbox.txt",
-    "Cape": "stock/Cape.txt",
-    "Minecraft": "stock/Minecraft.txt",
-    "Crunchyroll": "stock/Crunchyroll.txt",
-    "Steam": "stock/Steam.txt"
+    "Steam": "stock/Steam.txt",
+    "CrunchyRoll": "stock/CrunchyRoll.txt",
+    "Xbox_Code": "stock/Xbox_Code.txt",
+    "Netflix": "stock/Netflix.txt"
   },
   "Booster": {
+    "Mcsfa": "bosststock/Mcsfa.txt",
     "Donut": "bosststock/Donut.txt",
-    "Unbanned": "booststock/Unbanned.txt"
-  },
-  "Premium": {
-    "Mcfa": "paidstock/Mcfa.txt"
+    "Hypixel": "bosststock/Hypixel.txt"
   }
 };
 
